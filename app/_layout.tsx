@@ -1,25 +1,28 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { useCallback, useEffect } from 'react';
+import { Tabs } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import { useFonts } from 'expo-font';
+import { View } from 'react-native';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
+SplashScreen.preventAutoHideAsync().catch(() => {
+  /* reloading the app might trigger some race conditions, ignore them */
+});
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
-
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+export default function TabLayout() {
+  const [loaded, error] = useFonts({
+    ...Ionicons.font,
   });
 
   useEffect(() => {
+    if (error) throw error;
+  }, [error]);
+
+  useEffect(() => {
     if (loaded) {
-      SplashScreen.hideAsync();
+      SplashScreen.hideAsync().catch(() => {
+        /* reloading the app might trigger some race conditions, ignore them */
+      });
     }
   }, [loaded]);
 
@@ -28,12 +31,54 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <Tabs
+    screenOptions={({ route }) => ({
+        tabBarActiveTintColor: '#34A336', 
+        tabBarInactiveTintColor: '#8E8E93',
+        tabBarStyle: {
+          backgroundColor: '#F2F2F7', 
+        },
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName: keyof typeof Ionicons.glyphMap = 'home';
+
+          if (route.name === 'index') {
+            iconName = focused ? 'home' : 'home-outline';
+          } else if (route.name === 'route-planning') {
+            iconName = focused ? 'map' : 'map-outline';
+          } else if (route.name === 'bus-tracking') {
+            iconName = focused ? 'bus' : 'bus-outline';
+          } else if (route.name === 'settings') {
+            iconName = focused ? 'settings' : 'settings-outline';
+          }
+
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+      })}
+    >
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: 'Home',
+        }}
+      />
+      <Tabs.Screen
+        name="route-planning"
+        options={{
+          title: 'Route Planning',
+        }}
+      />
+      <Tabs.Screen
+        name="bus-tracking"
+        options={{
+          title: 'Bus Tracking',
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: 'Settings',
+        }}
+      />
+    </Tabs>
   );
 }
