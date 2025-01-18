@@ -47,8 +47,8 @@ export default function TabLayout() {
             iconName = focused ? 'map' : 'map-outline';
           } else if (route.name === 'bus-tracking') {
             iconName = focused ? 'bus' : 'bus-outline';
-          } else if (route.name === 'settings') {
-            iconName = focused ? 'settings' : 'settings-outline';
+          } else if (route.name === 'profile') {
+            iconName = focused ? 'person-circle' : 'person-circle-outline';
           }
 
           return <Ionicons name={iconName} size={size} color={color} />;
@@ -73,10 +73,9 @@ export default function TabLayout() {
           title: 'Bus Tracking',
         }}
       />
-      <Tabs.Screen
-        name="settings"
+      <Tabs.Screen name="profile" 
         options={{
-          title: 'Settings',
+            title: 'Profile',
         }}
       />
     </Tabs>
