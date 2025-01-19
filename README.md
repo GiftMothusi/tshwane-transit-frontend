@@ -68,14 +68,6 @@ yarn test
 - Android: Google Play Store
 - CI/CD managed through GitHub Actions
 
-## Folder Structure
-- `/src`
-  - `/components`: Reusable UI components
-  - `/screens`: App screens
-  - `/navigation`: App navigation setup
-  - `/services`: API and backend interactions
-  - `/store`: Redux store and slices
-  - `/utils`: Utility functions
 
 ## Contributing
 1. Fork the repository
