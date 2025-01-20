@@ -1,22 +1,54 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch, Image } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch, Image, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
+import { useAuth } from '../contexts/AuthContext';
+import { useRouter } from 'expo-router';
 
 export default function ProfileScreen() {
   const [language, setLanguage] = useState('english');
   const [offlineMode, setOfflineMode] = useState(false);
   const [pushNotifications, setPushNotifications] = useState(true);
+  const { user, signOut } = useAuth();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      // No need to manually navigate - AuthContext will handle this
+    } catch (error) {
+      Alert.alert('Error', 'Failed to logout. Please try again.');
+      console.error('Logout error:', error);
+    }
+  };
+
+  const confirmLogout = () => {
+    Alert.alert(
+      'Logout',
+      'Are you sure you want to logout?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel'
+        },
+        {
+          text: 'Logout',
+          onPress: handleLogout,
+          style: 'destructive'
+        }
+      ]
+    );
+  };
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Image
-          source={{ uri: 'https://placekitten.com/200/200' }}
+          source={{ uri: 'https://via.placeholder.com/200' }}
           style={styles.profileImage}
         />
-        <Text style={styles.name}>John Doe</Text>
-        <Text style={styles.email}>johndoe@example.com</Text>
+        <Text style={styles.name}>{user?.name || 'User Name'}</Text>
+        <Text style={styles.email}>{user?.email || 'email@example.com'}</Text>
       </View>
 
       <View style={styles.section}>
@@ -82,7 +114,7 @@ export default function ProfileScreen() {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity style={styles.logoutButton}>
+      <TouchableOpacity style={styles.logoutButton} onPress={confirmLogout}>
         <Text style={styles.logoutButtonText}>Log Out</Text>
       </TouchableOpacity>
     </ScrollView>
@@ -157,4 +189,3 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-
