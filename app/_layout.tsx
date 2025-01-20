@@ -1,15 +1,39 @@
-import { useCallback, useEffect } from 'react';
-import { Tabs } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+// app/_layout.tsx
+import { useEffect } from 'react';
+import { Slot, useSegments, useRouter } from 'expo-router';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
-import { View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
+// Prevent splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync().catch(() => {
   /* reloading the app might trigger some race conditions, ignore them */
 });
 
-export default function TabLayout() {
+function RootLayoutNav() {
+  const { isAuthenticated, loading } = useAuth();
+  const segments = useSegments();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading) {
+      const inAuthGroup = segments[0] === '(auth)';
+      
+      if (!isAuthenticated && !inAuthGroup) {
+        // Redirect to login if not authenticated
+        router.replace('/(auth)/login');
+      } else if (isAuthenticated && inAuthGroup) {
+        // Redirect to home if authenticated
+        router.replace('/(tabs)');
+      }
+    }
+  }, [isAuthenticated, loading, segments]);
+
+  return <Slot />;
+}
+
+export default function RootLayout() {
   const [loaded, error] = useFonts({
     ...Ionicons.font,
   });
@@ -30,54 +54,10 @@ export default function TabLayout() {
     return null;
   }
 
+  // Return AuthProvider with properly typed children prop
   return (
-    <Tabs
-    screenOptions={({ route }) => ({
-        tabBarActiveTintColor: '#34A336', 
-        tabBarInactiveTintColor: '#8E8E93',
-        tabBarStyle: {
-          backgroundColor: '#F2F2F7', 
-        },
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName: keyof typeof Ionicons.glyphMap = 'home';
-
-          if (route.name === 'index') {
-            iconName = focused ? 'home' : 'home-outline';
-          } else if (route.name === 'route-planning') {
-            iconName = focused ? 'map' : 'map-outline';
-          } else if (route.name === 'bus-tracking') {
-            iconName = focused ? 'bus' : 'bus-outline';
-          } else if (route.name === 'profile') {
-            iconName = focused ? 'person-circle' : 'person-circle-outline';
-          }
-
-          return <Ionicons name={iconName} size={size} color={color} />;
-        },
-      })}
-    >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-        }}
-      />
-      <Tabs.Screen
-        name="route-planning"
-        options={{
-          title: 'Route Planning',
-        }}
-      />
-      <Tabs.Screen
-        name="bus-tracking"
-        options={{
-          title: 'Bus Tracking',
-        }}
-      />
-      <Tabs.Screen name="profile" 
-        options={{
-            title: 'Profile',
-        }}
-      />
-    </Tabs>
+    <AuthProvider>
+      <RootLayoutNav />
+    </AuthProvider>
   );
 }
