@@ -12,7 +12,7 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.tshwanetransit.app",
       "config": {
-        "googleMapsApiKey": "AIzaSyCjIZ1CNG5mzPITikg8zynNnLSsKcPa6L4"
+        "googleMapsApiKey": "${process.env.EXPO_PUBLIC_GOOGLE_MAPS_IOS_KEY}"
       }
     },
     "android": {
@@ -23,7 +23,7 @@
       "package": "com.tshwanetransit.app",
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyDF6NgP_202AlLq5oJd41O4n0evIIl0w00"
+          "apiKey": "${process.env.EXPO_PUBLIC_GOOGLE_MAPS_ANDROID_KEY}"
         }
       }
     },
