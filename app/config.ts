@@ -138,7 +138,11 @@ export const config = {
         schedule: 1800, // 30 minutes
         user_data: 86400, // 24 hours
       },
-    }
+    },
+    maps: {
+        ios: process.env.EXPO_PUBLIC_GOOGLE_MAPS_IOS_KEY,
+        android: process.env.EXPO_PUBLIC_GOOGLE_MAPS_ANDROID_KEY
+      },
   };
   
   // Type definitions
