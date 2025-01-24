@@ -5,6 +5,7 @@ import { Stack } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function NearbyStopsModal() {
+    
   return (
     <SafeAreaView style={styles.safeArea}>
       <Stack.Screen 
