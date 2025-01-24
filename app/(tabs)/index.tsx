@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { NavigationProp } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 
 interface QuickActionButtonProps {
   icon: keyof typeof Ionicons.glyphMap;
@@ -33,6 +34,20 @@ const RecentTrip = ({ from, to, onPress }: RecentTripProps) => (
   </TouchableOpacity>
 );
 export default function HomeScreen({ navigation }: { navigation: NavigationProp<any> }) {
+    const router = useRouter();
+    
+    const handlePlanRoute = () => {
+        router.push('/(tabs)/route-planning');
+      };
+     
+      const handleNearbyStops = () => {
+        router.push('/modals/nearby-stops');
+      };
+     
+      const handleLiveTracking = () => {
+        router.push('/(tabs)/bus-tracking');
+      };
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
@@ -44,17 +59,17 @@ export default function HomeScreen({ navigation }: { navigation: NavigationProp<
         <QuickActionButton 
           icon="map" 
           label="Plan Route" 
-          onPress={() => navigation.navigate('Route Planning')} 
+          onPress={handlePlanRoute} 
         />
         <QuickActionButton 
           icon="location" 
           label="Nearby Stops" 
-          onPress={() => console.log('Navigate to Nearby Stops')} 
+          onPress={handleNearbyStops} 
         />
         <QuickActionButton 
           icon="bus" 
           label="Live Tracking" 
-          onPress={() => navigation.navigate('Bus Tracking')} 
+          onPress={handleLiveTracking} 
         />
       </View>
 
