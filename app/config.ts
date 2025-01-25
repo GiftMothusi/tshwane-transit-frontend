@@ -89,6 +89,7 @@ export const config = {
         list: '/routes',
         search: '/routes/search',
         nearby: '/routes/nearby',
+        plan: '/routes/plan'
       },
       buses: {
         list: '/buses',
